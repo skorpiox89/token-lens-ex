@@ -2,3 +2,12 @@ node_modules/
 dist/
 .DS_Store
 *.log
+
+# MCP 运行数据/秘密：cookie、token、本地配置、venv、缓存与导出
+mcp/**/cookie.txt
+mcp/**/token.txt
+mcp/**/config.json
+mcp/**/outline.json
+mcp/**/venv/
+mcp/**/__pycache__/
+mcp/**/export/

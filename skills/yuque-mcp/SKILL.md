@@ -27,7 +27,7 @@ description: 配置/排查 TokenLens 的语雀 MCP 服务（本地 cookie 模式
 1. 找到包目录（`pi list` 里的 git 包路径，如 `~/.pi/agent/git/github.com/skorpiox89/token-lens-ex`），执行：
 
    ```bash
-   sh <包目录>/mcp/yuque/setup.sh
+   sh <包目录>/mcp/setup.sh yuque
    ```
 
    需要 `python3`；也可以改用 `uv`（不建 venv 时扩展会自动用 uv）。

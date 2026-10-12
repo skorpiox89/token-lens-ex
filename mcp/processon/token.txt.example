@@ -1,0 +1,4 @@
+# 把下面整行替换成你浏览器里的 JWT（F12 → Network → 任意 /api/personal/ 请求
+# → Request Headers → token 的值，形如 eyJhbGciOi...）
+# 只读用途，建议用非主账号或事后改密。
+eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjB9.REPLACE_ME

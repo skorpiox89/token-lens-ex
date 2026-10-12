@@ -10,16 +10,17 @@
 |---|---|
 | `server.py` | MCP stdio 服务（`mcp>=1.2.0,<2`） |
 | `requirements.txt` | Python 依赖 |
-| `setup.sh` | 在 `~/.local/share/token-lens-ex/mcp/yuque/venv` 建独立 venv（不放进包目录，避免 pi 更新时被清） |
+| `setup.sh`（上级目录） | 在 `~/.local/share/token-lens-ex/mcp/yuque/venv` 建独立 venv（不放进包目录，避免 pi 更新时被清） |
 | `check_cookie.py` | 校验 cookie 是否有效 |
 | `test_client.py` | 协议级自测（stdio 握手 + tools/list） |
 
 ## 环境与凭据
 
 ```bash
-./setup.sh                              # 建 venv + 装依赖
+# 在仓库包目录执行（venv 建到 ~/.local/share/token-lens-ex/mcp/yuque/venv）
+sh mcp/setup.sh yuque
 cp cookie.txt ~/.local/share/token-lens-ex/mcp/yuque/cookie.txt   # 放 cookie（勿提交）
-python3 check_cookie.py                 # 验证
+python3 mcp/yuque/check_cookie.py                 # 验证
 ```
 
 cookie 获取：浏览器 F12 → Network → 刷新语雀 → 任意请求的 Request Headers 里整段复制
