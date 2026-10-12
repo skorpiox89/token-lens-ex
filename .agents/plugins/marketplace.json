@@ -1,0 +1,7 @@
+{
+  "name": "token-lens-ex",
+  "interface": {
+    "displayName": "TokenLens Ex"
+  },
+  "plugins": []
+}

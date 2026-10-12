@@ -11,7 +11,7 @@ tail 的正是同一个文件，因此不需要额外的 sidecar 文件或进程
 
 ```bash
 # 从 git 包安装（固定 tag，推荐）
-pi install git:github.com/skorpiox89/token-lens-ex@v0.1.1
+pi install git:github.com/skorpiox89/token-lens-ex@v0.2.0
 
 # 本地开发
 pi install /path/to/token-lens-ex
