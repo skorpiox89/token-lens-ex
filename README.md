@@ -1,7 +1,8 @@
-# token-lens-agent
+# token-lens-ex
 
-TokenLens 的 AI Agent 资源仓库：集中存放各 AI agent 的扩展与技能。
-同一个仓库同时承载多种 agent 的资源，各自从仓库里安装/发现自己需要的部分。
+TokenLens 的 AI Agent 资源仓库（ex = extensions / skills）：集中存放各 AI agent
+的扩展与技能。同一个仓库同时承载多种 agent 的资源，各自从仓库里安装/发现自己
+需要的部分。
 
 ## 目录结构
 
@@ -21,15 +22,15 @@ TokenLens 的 AI Agent 资源仓库：集中存放各 AI agent 的扩展与技�
 
 ```bash
 # 固定 tag（推荐）
-pi install git:github.com/skorpiox89/token-lens-agent@v0.1.0
+pi install git:github.com/skorpiox89/token-lens-ex@v0.1.1
 
 # 本地开发
-pi install /path/to/token-lens-agent
+pi install /path/to/token-lens-ex
 ```
 
 - git 包按 tag/commit 固定，不会自动跟随分支更新。
 - 升级到新版本：把 settings 里的 ref 改成新 tag，然后 `pi update --extensions`。
-- 卸载：`pi remove git:github.com/skorpiox89/token-lens-agent`。
+- 卸载：`pi remove git:github.com/skorpiox89/token-lens-ex`。
 - 安装后启动 pi，用 `pi list` 或启动横幅里的 `[Extensions]` 确认资源已加载。
 
 ## 发布新版本

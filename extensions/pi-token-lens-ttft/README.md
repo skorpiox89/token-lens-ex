@@ -11,10 +11,10 @@ tail 的正是同一个文件，因此不需要额外的 sidecar 文件或进程
 
 ```bash
 # 从 git 包安装（固定 tag，推荐）
-pi install git:github.com/skorpiox89/token-lens-agent@v0.1.0
+pi install git:github.com/skorpiox89/token-lens-ex@v0.1.1
 
 # 本地开发
-pi install /path/to/token-lens-agent
+pi install /path/to/token-lens-ex
 ```
 
 Windows 机器用 `make collector-bundle` 的发布包时无需手动安装：`install-windows.ps1`
