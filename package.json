@@ -1,0 +1,17 @@
+{
+  "name": "token-lens-agent",
+  "version": "0.1.0",
+  "description": "TokenLens AI agent resources: pi extensions and skills.",
+  "license": "MIT",
+  "keywords": [
+    "pi-package"
+  ],
+  "pi": {
+    "extensions": [
+      "./extensions/*/index.ts"
+    ],
+    "skills": [
+      "./skills"
+    ]
+  }
+}
