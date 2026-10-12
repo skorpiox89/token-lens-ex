@@ -24,3 +24,5 @@ pi list          # 确认加载
 
 - `pi-token-lens-ttft`：把每条 assistant 请求的 TTFT 写入 pi 会话 JSONL，供
   TokenLens 的 `lens-agent` 采集为使用记录的 `first_token_ms`。
+- `yuque-mcp`：自动注册包内 `mcp/yuque/` 的语雀 MCP server（配置即代码，
+  不依赖 `mcp.json`）；环境与 cookie 处理见 `skills/yuque-mcp/SKILL.md`。

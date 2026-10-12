@@ -12,9 +12,12 @@ token-lens-ex/
 ├── .agents/plugins/
 │   └── marketplace.json         # Codex marketplace 清单（有 codex 插件时启用）
 ├── skills/                      # 跨 agent 通用技能（Agent Skills 规范，SKILL.md）
+├── mcp/                         # MCP 服务代码（MCP-as-code，见下）
+│   └── yuque/                   # 语雀本地 stdio MCP
 ├── pi/                          # pi 专用
 │   ├── extensions/              # pi 扩展：每个子目录一个，入口 index.ts
-│   │   └── pi-token-lens-ttft/
+│   │   ├── pi-token-lens-ttft/
+│   │   └── yuque-mcp/           # 自动注册 mcp/yuque 的 MCP server
 │   └── skills/                  # pi 专用技能
 ├── codex/                       # Codex 专用
 │   └── plugins/                 # Codex 插件：每个子目录一个，含 .codex-plugin/plugin.json
@@ -34,7 +37,7 @@ token-lens-ex/
 ### pi
 
 ```bash
-pi install git:github.com/skorpiox89/token-lens-ex@v0.2.0   # 固定 tag，推荐
+pi install git:github.com/skorpiox89/token-lens-ex@v0.3.0   # 固定 tag，推荐
 pi install /path/to/token-lens-ex                            # 本地开发
 ```
 
@@ -55,6 +58,20 @@ codex/plugins/<name>/
 
 `skills/<name>/SKILL.md` 遵循 Agent Skills 规范，pi 由根清单加载；codex / opencode
 可直接复用同一份内容（放入各自插件目录或引用）。新增技能只需在 `skills/` 建目录。
+
+## MCP 服务（MCP-as-code）
+
+MCP 的「代码 + 环境 + 密钥」不适合直接用 `mcp.json` 跨机同步（绝对路径、venv、cookie
+都不通用），因此代码型的 MCP 采用：
+
+1. 服务代码放 `mcp/<name>/`（随 pi 包安装到每台机器）；
+2. `pi/extensions/<name>-mcp/` 扩展用 `pi.registerMcpServer()` 自动注册，路径相对包目录；
+3. `skills/<name>-mcp/SKILL.md` 给 ai agent 的部署/排障说明（建环境、放 cookie）；
+4. 秘密（cookie/token）只留在机器上，不进仓库。
+
+首个落地：语雀 → [`mcp/yuque/README.md`](mcp/yuque/README.md) 与
+[`skills/yuque-mcp/SKILL.md`](skills/yuque-mcp/SKILL.md)。纯配置型（无本地代码、直连 URL）
+的 MCP 仍可放 `mcp.json`，由 TokenLens 基线同步。
 
 ## 发布新版本
 
