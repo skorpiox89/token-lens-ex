@@ -51,6 +51,21 @@ opencode 与 pi 不同：没有「包内资源自动注册」，本地 MCP 走 `
 | MCP cookie / token | `~/.local/share/token-lens-ex/mcp/<name>/cookie.txt` / `token.txt` |
 | provider API key | `~/.local/share/token-lens-ex/opencode/keys/<providerID>.txt` |
 
+## TokenLens 同步范围（AI Agent 配置同步）
+
+相对配置目录（`~/.config/opencode`）：
+
+| 受管 | 类型 | 说明 |
+|---|---|---|
+| `opencode.json` / `opencode.jsonc` / `cli.json` | 文件 | 配置（MCP、provider、TUI） |
+| `AGENTS.md` | 文件 | 全局指令 |
+| `skills/**` | 目录 | 技能（opencode 扫描 `skill/` 与 `skills/`，本约定用 `skills/`） |
+| `plugin/**` | 目录 | 本地插件（opencode 扫描 `plugin/` 与 `plugins/`，本约定用 `plugin/`） |
+
+仍不同步：`service.json`（密码/env）、`auth.json`、`node_modules/`、`package.json`/
+`bun.lock`。`opencode plugin add` 安装的 npm/git 插件只随 `opencode.json` 同步声明，
+目标机需自行 `opencode plugin add <pkg>` 补齐依赖（依赖清单同步属于 P2）。
+
 ## 新机部署顺序
 
 1. 拿到仓库（`git clone`，或 pi 包的 `~/.pi/agent/git/github.com/skorpiox89/token-lens-ex`）；
