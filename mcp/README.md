@@ -15,7 +15,10 @@
 - `pi/extensions/<name>-mcp/index.ts`：注册扩展（用 `../lib/mcp-support.ts` 的共享工具）；
 - `skills/<name>-mcp/SKILL.md`：部署与排障说明。
 
-环境准备统一用 `sh mcp/setup.sh <name>`（venv 建在数据目录，不在包内）。
+环境准备统一用 `sh mcp/setup.sh <name>`：venv 建在数据目录（不在包内），同时生成
+机器本地启动器 `~/.local/share/token-lens-ex/mcp/<name>/run.sh`。
+pi 扩展直接按包内路径解析；没有包机制的客户端（如 opencode）统一调用 `run.sh`，
+详见 [`../opencode/README.md`](../opencode/README.md)。
 
 当前服务：
 

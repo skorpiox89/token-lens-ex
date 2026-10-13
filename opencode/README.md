@@ -1,14 +1,72 @@
-# opencode 资源（预留）
+# opencode 资源
 
-opencode 的 `plugin add` 以 **npm/git 包（仓库根）** 为单位安装，不支持 monorepo
-子目录直接安装。因此约定：
+opencode 与 pi 不同：没有「包内资源自动注册」，本地 MCP 走 `opencode.json` 的
+`mcp.servers`。为了让这份配置能被 TokenLens 基线安全地跨机同步，约定如下：
 
-- 插件代码放 `opencode/plugins/<name>/`，每个插件导出 opencode plugin；
-- 仓库根的 `opencode/index.ts` 统一 re-export 所有插件（未来加），
-  根 `package.json` 的入口指向它；
-- 安装：`opencode plugin add github:skorpiox89/token-lens-ex`，或把子目录作为
-  独立 npm 包发布后 `opencode plugin add <npm 包名>`。
+- **配置里零明文**：cookie / token / API key 全部放机器本地文件，配置用 opencode 的
+  `{file:...}` 引用（opencode 支持 `{file:...}` 与 `{env:...}` 插值）。
+- **配置里零本机绝对路径**：本机路径用 `{env:HOME}/...` 前缀；本地 MCP 服务统一通过
+  数据目录里的启动器 `~/.local/share/token-lens-ex/mcp/<name>/run.sh` 调用
+  （由 `sh mcp/setup.sh <name>` 生成，内含该机器自己的 venv/仓库路径）。
+- 这样 capture 到 TokenLens 的 `opencode.json` 不含任何秘密与机器路径；换机 apply 后
+  只需补齐本地秘密文件即可。
 
-本地开发也可以直接把插件文件软链到 `~/.config/opencode/plugin/`。
+## 配置片段
 
-说明：目前尚未放入 opencode 插件，先预留目录。
+```jsonc
+{
+  "mcp": {
+    "servers": {
+      "weibo": {
+        "type": "local",
+        "command": ["{env:HOME}/.local/share/token-lens-ex/mcp/weibo/run.sh"],
+        "environment": {
+          "WEIBO_COOKIE": "{file:~/.local/share/token-lens-ex/mcp/weibo/cookie.txt}"
+        }
+      },
+      "siyuan": {
+        "type": "remote",
+        "url": "http://127.0.0.1:6806/mcp",
+        "oauth": false,
+        "headers": {
+          "Authorization": "Token {file:~/.local/share/token-lens-ex/mcp/siyuan/token.txt}"
+        }
+      }
+    }
+  },
+  "provider": {
+    "opencode-go": {
+      "options": {
+        "apiKey": "{file:~/.local/share/token-lens-ex/opencode/keys/opencode-go.txt}"
+      }
+    }
+  }
+}
+```
+
+秘密文件位置（机器本地，永不进仓库、永不进 TokenLens 基线）：
+
+| 用途 | 路径 |
+|---|---|
+| MCP cookie / token | `~/.local/share/token-lens-ex/mcp/<name>/cookie.txt` / `token.txt` |
+| provider API key | `~/.local/share/token-lens-ex/opencode/keys/<providerID>.txt` |
+
+## 新机部署顺序
+
+1. 拿到仓库（`git clone`，或 pi 包的 `~/.pi/agent/git/github.com/skorpiox89/token-lens-ex`）；
+2. `sh mcp/setup.sh <name>`：建 venv、装依赖、生成 `run.sh`；
+3. 放秘密文件（`cookie.txt` / `token.txt` / `keys/<providerID>.txt`）；
+4. 再同步 / apply `opencode.json`；
+5. 验证：`opencode debug config`（配置能解析）、`opencode mcp list`（server 全部 connected）。
+
+> 顺序很重要：`{file:}` 指向的文件必须存在，否则整份 `opencode.json` 判为无效，
+> 不是只坏一个 server。
+
+## 注意事项
+
+- 秘密文件不要带换行（用 `printf` 写入），`{file:}` 不会 trim；
+- `command` 数组里不能直接写 `~/...`（opencode 不展开裸 `~`），必须 `{env:HOME}/...`；
+- `{file:}` 支持写在字符串中间（如 `"Token {file:...}"`），也支持绝对路径 / `~/` 前缀；
+- Windows 需把 `run.sh` 换成 `.cmd`、`{env:HOME}` 换成 `{env:USERPROFILE}`，目前未提供；
+- 插件目录 `plugins/` 仍为预留：opencode 的 `plugin add` 以仓库根 npm/git 包为单位，
+  需要时在根 `package.json` 增加入口并在此目录按 `plugins/<name>/` 放置。

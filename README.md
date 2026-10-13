@@ -27,7 +27,8 @@ token-lens-ex/
 ├── codex/                       # Codex 专用
 │   └── plugins/                 # Codex 插件：每个子目录一个，含 .codex-plugin/plugin.json
 └── opencode/                    # opencode 专用
-    └── plugins/                 # opencode 插件
+    ├── README.md                # MCP 配置约定：零明文秘密、零本机绝对路径
+    └── plugins/                 # opencode 插件（预留）
 ```
 
 ## 各家 agent 的接入方式
@@ -36,13 +37,13 @@ token-lens-ex/
 |---|---|---|
 | **pi** | `pi install git:github.com/skorpiox89/token-lens-ex@vX.Y.Z`（读根 `package.json` 的 `pi` 字段） | `pi/extensions/*/index.ts`、`pi/skills/`、根 `skills/` |
 | **codex** | `codex plugin marketplace add skorpiox89/token-lens-ex@vX.Y.Z` + `codex plugin add <name>`（读根 `.agents/plugins/marketplace.json`） | `codex/plugins/<name>/`（其中 skills 放插件的 `skills/` 下） |
-| **opencode** | `opencode plugin add github:skorpiox89/token-lens-ex`（npm/git 包以仓库根为单位） | `opencode/plugins/<name>/`，由 `opencode/index.ts` 统一 re-export（每个插件在子目录导出） |
+| **opencode** | 插件：`opencode plugin add github:skorpiox89/token-lens-ex`（npm/git 包以仓库根为单位）；MCP：写 `opencode.json`，按 [`opencode/README.md`](opencode/README.md) 用 `{file:}`/`{env:HOME}` 零明文引用 | `opencode/plugins/<name>/`（由 `opencode/index.ts` 统一 re-export）；本机资源在数据目录 |
 | 其他 | 按各自规范，新增顶层目录（如 `cline/`）并在对应清单里注册 | — |
 
 ### pi
 
 ```bash
-pi install git:github.com/skorpiox89/token-lens-ex@v0.4.0   # 固定 tag，推荐
+pi install git:github.com/skorpiox89/token-lens-ex@v0.5.0   # 固定 tag，推荐
 pi install /path/to/token-lens-ex                            # 本地开发
 ```
 
@@ -72,7 +73,12 @@ MCP 的「代码 + 环境 + 密钥」不适合直接用 `mcp.json` 跨机同步�
 1. 服务代码放 `mcp/<name>/`（随 pi 包安装到每台机器）；
 2. `pi/extensions/<name>-mcp/` 扩展用 `pi.registerMcpServer()` 自动注册，路径相对包目录；
 3. `skills/<name>-mcp/SKILL.md` 给 ai agent 的部署/排障说明（建环境、放 cookie）；
-4. 秘密（cookie/token）只留在机器上，不进仓库。
+4. 秘密（cookie/token）只留在机器上，不进仓库；opencode 端同样用 `opencode.json`
+   的 `{file:}` 引用（见 [`opencode/README.md`](opencode/README.md)）。
+
+本地 MCP 服务统一用 `sh mcp/setup.sh <name>` 部署：建 venv、装依赖，并生成数据目录
+启动器 `~/.local/share/token-lens-ex/mcp/<name>/run.sh`，供没有包内路径解析能力的
+客户端（opencode）调用。
 
 首个落地（均已迁移）：语雀、微博、QQ空间、ProcessOn、思源笔记、Outline → 目录见
 [`mcp/README.md`](mcp/README.md)，部署说明在各自的 `skills/<name>-mcp/SKILL.md`。

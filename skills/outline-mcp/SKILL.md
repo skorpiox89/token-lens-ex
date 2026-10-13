@@ -28,6 +28,29 @@ Outline 知识库 MCP，由 npm 包 `outline-mcp-server` 提供（无本仓库�
 
 4. 重开 pi 会话，确认 `outline` 工具可用。
 
+## opencode 接入
+
+`{file:}` 不能从 `config.json` 里取单个字段，所以把 URL / KEY 另存为两个小文件：
+
+```bash
+D=~/.local/share/token-lens-ex/mcp/outline
+printf '%s' 'https://outline.example.com' > $D/api-url.txt
+printf '%s' 'ol_api_xxx' > $D/api-key.txt
+```
+
+```jsonc
+"outline": {
+  "type": "local",
+  "command": ["npx", "-y", "--package", "outline-mcp-server", "outline-mcp-server-stdio"],
+  "environment": {
+    "OUTLINE_API_URL": "{file:~/.local/share/token-lens-ex/mcp/outline/api-url.txt}",
+    "OUTLINE_API_KEY": "{file:~/.local/share/token-lens-ex/mcp/outline/api-key.txt}"
+  }
+}
+```
+
+约定与排错见 token-lens-ex 的 `opencode/README.md`（`{file:}` 缺文件会让整份配置无效）。
+
 ## 排障
 
 - 启动提示缺少 URL/KEY → 回到步骤 2。

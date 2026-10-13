@@ -25,6 +25,21 @@ description: 配置/排查 TokenLens 的思源笔记 MCP（HTTP，本机 6806 �
 
 4. 重开 pi 会话，确认 `siyuan` 工具可用。
 
+## opencode 接入
+
+`opencode.json` 里 token 不内联（远程地址按机器改）：
+
+```jsonc
+"siyuan": {
+  "type": "remote",
+  "url": "http://127.0.0.1:6806/mcp",
+  "oauth": false,
+  "headers": { "Authorization": "Token {file:~/.local/share/token-lens-ex/mcp/siyuan/token.txt}" }
+}
+```
+
+约定与排错见 token-lens-ex 的 `opencode/README.md`（`{file:}` 缺文件会让整份配置无效）。
+
 ## 排障
 
 - 启动提示“未找到 SIYUAN_TOKEN” → 回到步骤 2。

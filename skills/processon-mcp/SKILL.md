@@ -36,6 +36,20 @@ description: 配置/排查 TokenLens 的 ProcessOn MCP 服务（本地 cookie �
 
 4. 重开 pi 会话，确认 `processon` 工具可用。
 
+## opencode 接入
+
+`opencode.json` 里零明文、零本机绝对路径（先跑 `setup.sh` 生成 `run.sh`）：
+
+```jsonc
+"processon": {
+  "type": "local",
+  "command": ["{env:HOME}/.local/share/token-lens-ex/mcp/processon/run.sh"],
+  "environment": { "PROCESSON_COOKIE": "{file:~/.local/share/token-lens-ex/mcp/processon/cookie.txt}" }
+}
+```
+
+约定与排错见 token-lens-ex 的 `opencode/README.md`（`{file:}` 缺文件会让整份配置无效）。
+
 ## 排障
 
 - 启动提示缺少凭据 → 回到步骤 2；提示缺 Python 环境 → 步骤 1。

@@ -57,6 +57,23 @@ description: 配置/排查 TokenLens 的语雀 MCP 服务（本地 cookie 模式
 4. 重开 pi 会话（或 `/reload`），用 `/mcp` 或工具搜索确认 `yuque` 已连接。
    扩展注册无需写入任何配置文件。
 
+## opencode 接入
+
+`opencode.json` 里零明文、零本机绝对路径（先跑 `setup.sh` 生成 `run.sh`）：
+
+```jsonc
+"yuque": {
+  "type": "local",
+  "command": ["{env:HOME}/.local/share/token-lens-ex/mcp/yuque/run.sh"],
+  "environment": {
+    "YUQUE_COOKIE": "{file:~/.local/share/token-lens-ex/mcp/yuque/cookie.txt}",
+    "YUQUE_LOGIN": "<你的语雀登录名>"
+  }
+}
+```
+
+约定与排错见 token-lens-ex 的 `opencode/README.md`（`{file:}` 缺文件会让整份配置无效）。
+
 ## 排障
 
 - **没有 yuque 工具**：重开会话；若启动提示“未找到 YUQUE_TOKEN / YUQUE_COOKIE”，回到步骤 2；

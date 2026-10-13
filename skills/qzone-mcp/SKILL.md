@@ -34,6 +34,20 @@ description: 配置/排查 TokenLens 的 QQ空间 MCP 服务（本地 cookie 模
 
 4. 重开 pi 会话，确认 `qzone` 工具可用。
 
+## opencode 接入
+
+`opencode.json` 里零明文、零本机绝对路径（先跑 `setup.sh` 生成 `run.sh`）：
+
+```jsonc
+"qzone": {
+  "type": "local",
+  "command": ["{env:HOME}/.local/share/token-lens-ex/mcp/qzone/run.sh"],
+  "environment": { "QZONE_COOKIE": "{file:~/.local/share/token-lens-ex/mcp/qzone/cookie.txt}" }
+}
+```
+
+约定与排错见 token-lens-ex 的 `opencode/README.md`（`{file:}` 缺文件会让整份配置无效）。
+
 ## 排障
 
 - 启动提示“未找到 QZONE_COOKIE” → 回到步骤 2；提示缺 Python 环境 → 步骤 1。
