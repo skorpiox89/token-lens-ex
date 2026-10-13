@@ -37,14 +37,22 @@ opencode 与 pi 不同：没有「包内资源自动注册」，本地 MCP 走 `
   "provider": {
     "opencode-go": {
       "options": {
-        "apiKey": "{file:~/.local/share/token-lens-ex/opencode/keys/opencode-go.txt}"
+        // 推荐：环境变量引用，值在 TokenLens 的 binding 密钥变量里配置
+        "apiKey": "{env:OPENCODE_GO_KEY}"
+        // 或本地文件："apiKey": "{file:~/.local/share/token-lens-ex/opencode/keys/opencode-go.txt}"
       }
     }
   }
 }
 ```
 
-秘密文件位置（机器本地，永不进仓库、永不进 TokenLens 基线）：
+密钥值两种管理方式（详见 TokenLens 的 `docs/ai-agent-secret-injection.md`）：
+
+- **TokenLens binding 密钥（多端同步推荐）**：配置写 `{env:NAME}`，在 AI Agent 页面
+  的机器弹窗里为该 binding 填写值；apply 时服务端注入，capture 时自动回填成引用。
+- **本机文件（不依赖 TokenLens）**：配置写 `{file:...}`，值放机器本地文件。
+
+秘密文件位置（本机文件方式；永不进仓库、永不进 TokenLens 基线）：
 
 | 用途 | 路径 |
 |---|---|
