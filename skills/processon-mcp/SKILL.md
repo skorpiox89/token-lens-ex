@@ -6,8 +6,8 @@ description: 配置/排查 TokenLens 的 ProcessOn MCP 服务（本地 cookie �
 # ProcessOn MCP（processon-mcp）
 
 只读 ProcessOn MCP（目录树/图表定义/Mermaid 转换/批量导出）。代码在 token-lens-ex
-包的 `mcp/processon/`，由 `pi/extensions/processon-mcp/` 扩展**自动注册**——不要
-把 `processon` 写进 `mcp.json`。
+包的 `mcp/processon/`，由 `pi/extensions/processon-mcp/` 扩展**自动注册**——默认不要
+把 `processon` 写进 `mcp.json`（TokenLens 托管例外，见文末）。
 
 ## 配置步骤
 
@@ -49,6 +49,22 @@ description: 配置/排查 TokenLens 的 ProcessOn MCP 服务（本地 cookie �
 ```
 
 约定与排错见 token-lens-ex 的 `opencode/README.md`（`{file:}` 缺文件会让整份配置无效）。
+
+## TokenLens 托管（可选，不配本机 cookie）
+
+已接入 TokenLens 配置同步的机器可以改走 `mcp.json`（先跑过 `setup.sh`；同名覆盖
+扩展注册）：
+
+```json
+"processon": {
+  "command": "~/.local/share/token-lens-ex/mcp/processon/run.sh",
+  "env": { "PROCESSON_COOKIE": "!lens-agent secret get PROCESSON_COOKIE" },
+  "exposure": "deferred"
+}
+```
+
+值在 Web「AI Agent → 机器部署 → 配置与密钥」按 binding 维护，多机用「复制全部密钥」
+分发；未迁移的机器保持扩展注册即可。
 
 ## 排障
 

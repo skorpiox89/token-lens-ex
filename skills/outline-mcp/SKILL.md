@@ -6,7 +6,8 @@ description: 配置/排查 TokenLens 的 Outline 知识库 MCP（npm 包 outline
 # Outline MCP（outline-mcp）
 
 Outline 知识库 MCP，由 npm 包 `outline-mcp-server` 提供（无本仓库代码），
-`pi/extensions/outline-mcp/` 扩展负责注册。不要把 `outline` 写进 `mcp.json`。
+`pi/extensions/outline-mcp/` 扩展负责注册。默认不要把 `outline` 写进 `mcp.json`
+（TokenLens 托管例外，见文末）。
 
 ## 配置步骤
 
@@ -50,6 +51,25 @@ printf '%s' 'ol_api_xxx' > $D/api-key.txt
 ```
 
 约定与排错见 token-lens-ex 的 `opencode/README.md`（`{file:}` 缺文件会让整份配置无效）。
+
+## TokenLens 托管（可选，不配本机 key）
+
+已接入 TokenLens 配置同步的机器可以改走 `mcp.json`（同名覆盖扩展注册）：
+
+```json
+"outline": {
+  "command": "npx",
+  "args": ["-y", "--package", "outline-mcp-server", "outline-mcp-server-stdio"],
+  "env": {
+    "OUTLINE_API_URL": "https://outline.example.com",
+    "OUTLINE_API_KEY": "!lens-agent secret get OUTLINE_API_KEY"
+  },
+  "exposure": "deferred"
+}
+```
+
+`OUTLINE_API_URL` 不是秘密、按机器写；key 在 Web「AI Agent → 机器部署 → 配置与密钥」
+按 binding 维护，多机用「复制全部密钥」分发。
 
 ## 排障
 

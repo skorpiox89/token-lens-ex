@@ -5,8 +5,8 @@ description: 配置/排查 TokenLens 的思源笔记 MCP（HTTP，本机 6806 �
 
 # 思源笔记 MCP（siyuan-mcp）
 
-思源笔记自带 HTTP MCP 服务，**没有本地代码**，由 `pi/extensions/siyuan-mcp/`
-扩展注册（不要把 `siyuan` 写进 `mcp.json`）。
+思源笔记自带 HTTP MCP 服务，**没有本地代码**，默认由 `pi/extensions/siyuan-mcp/`
+扩展注册（不要把 `siyuan` 写进 `mcp.json`；TokenLens 托管例外，见文末）。
 
 ## 配置步骤
 
@@ -39,6 +39,21 @@ description: 配置/排查 TokenLens 的思源笔记 MCP（HTTP，本机 6806 �
 ```
 
 约定与排错见 token-lens-ex 的 `opencode/README.md`（`{file:}` 缺文件会让整份配置无效）。
+
+## TokenLens 托管（可选，不配本机 token）
+
+已接入 TokenLens 配置同步的机器可以改走 `mcp.json`（同名会覆盖扩展注册）：
+
+```json
+"siyuan": {
+  "url": "http://127.0.0.1:6806/mcp",
+  "headers": { "Authorization": "!lens-agent secret get --format 'Token {value}' SIYUAN_TOKEN" },
+  "exposure": "deferred"
+}
+```
+
+值在 Web「AI Agent → 机器部署 → 配置与密钥」按 binding 维护，多机用「复制全部密钥」
+分发；本机需已配置 lens-agent 的 pi token。未迁移的机器保持扩展注册即可。
 
 ## 排障
 

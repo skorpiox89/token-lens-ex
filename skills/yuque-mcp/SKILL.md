@@ -6,8 +6,8 @@ description: 配置/排查 TokenLens 的语雀 MCP 服务（本地 cookie 模式
 # 语雀 MCP（yuque-mcp）
 
 语雀知识库读写的本地 stdio MCP 服务。代码在 token-lens-ex 包的 `mcp/yuque/`，
-由 `pi/extensions/yuque-mcp/` 扩展 **自动注册**——**不要**往 `mcp.json` 里写
-`yuque` 条目（同名会覆盖扩展注册，造成两份配置）。
+由 `pi/extensions/yuque-mcp/` 扩展 **自动注册**——默认**不要**往 `mcp.json` 里写
+`yuque` 条目（同名会覆盖扩展注册，造成两份配置；TokenLens 托管是有意覆盖，见文末）。
 
 ## 组成与路径
 
@@ -73,6 +73,22 @@ description: 配置/排查 TokenLens 的语雀 MCP 服务（本地 cookie 模式
 ```
 
 约定与排错见 token-lens-ex 的 `opencode/README.md`（`{file:}` 缺文件会让整份配置无效）。
+
+## TokenLens 托管（可选，不配本机 cookie）
+
+已接入 TokenLens 配置同步的机器可以改走 `mcp.json`（先跑过 `setup.sh`；同名覆盖
+扩展注册）：
+
+```json
+"yuque": {
+  "command": "~/.local/share/token-lens-ex/mcp/yuque/run.sh",
+  "env": { "YUQUE_COOKIE": "!lens-agent secret get YUQUE_COOKIE" },
+  "exposure": "deferred"
+}
+```
+
+值在 Web「AI Agent → 机器部署 → 配置与密钥」按 binding 维护，多机用「复制全部密钥」
+分发；未迁移的机器保持扩展注册即可。
 
 ## 排障
 

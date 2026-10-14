@@ -6,7 +6,8 @@ description: 配置/排查 TokenLens 的 QQ空间 MCP 服务（本地 cookie 模
 # QQ空间 MCP（qzone-mcp）
 
 只读 QQ空间 MCP（说说/日志/相册）。代码在 token-lens-ex 包的 `mcp/qzone/`，
-由 `pi/extensions/qzone-mcp/` 扩展**自动注册**——不要把 `qzone` 写进 `mcp.json`。
+由 `pi/extensions/qzone-mcp/` 扩展**自动注册**——默认不要把 `qzone` 写进 `mcp.json`
+（TokenLens 托管例外，见文末）。
 
 ## 配置步骤
 
@@ -47,6 +48,22 @@ description: 配置/排查 TokenLens 的 QQ空间 MCP 服务（本地 cookie 模
 ```
 
 约定与排错见 token-lens-ex 的 `opencode/README.md`（`{file:}` 缺文件会让整份配置无效）。
+
+## TokenLens 托管（可选，不配本机 cookie）
+
+已接入 TokenLens 配置同步的机器可以改走 `mcp.json`（先跑过 `setup.sh`；同名覆盖
+扩展注册）：
+
+```json
+"qzone": {
+  "command": "~/.local/share/token-lens-ex/mcp/qzone/run.sh",
+  "env": { "QZONE_COOKIE": "!lens-agent secret get QZONE_COOKIE" },
+  "exposure": "deferred"
+}
+```
+
+值在 Web「AI Agent → 机器部署 → 配置与密钥」按 binding 维护，多机用「复制全部密钥」
+分发；未迁移的机器保持扩展注册即可。
 
 ## 排障
 
