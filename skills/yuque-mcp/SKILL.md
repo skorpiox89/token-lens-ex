@@ -76,6 +76,11 @@ description: 配置/排查 TokenLens 的语雀 MCP 服务（本地 cookie 模式
 
 ## TokenLens 托管（可选，不配本机 cookie）
 
+> v0.7.0 起扩展自动兜底：环境变量与本地文件都缺失时，执行
+> `lens-agent secret get <NAME>` 从 TokenLens binding 取密钥（值不落盘）。
+> 已接入配置同步的机器无需本机凭据或 `mcp.json` 条目；下面的显式写法只在需要
+> 覆盖扩展注册（把接线放进 TokenLens 基线）时使用。
+
 已接入 TokenLens 配置同步的机器可以改走 `mcp.json`（先跑过 `setup.sh`；同名覆盖
 扩展注册）：
 

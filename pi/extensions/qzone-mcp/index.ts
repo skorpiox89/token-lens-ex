@@ -4,11 +4,12 @@ import { join } from "node:path";
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-import { mcpDataDir, packageRoot, pythonRuntime, readFirstFile, warnOnStart } from "../lib/mcp-support.ts";
+import { mcpDataDir, firstSecret, packageRoot, pythonRuntime, warnOnStart } from "../lib/mcp-support.ts";
 
 /**
  * qzone-mcp：注册包内 mcp/qzone/server.py 为 pi 的 MCP server（配置即代码）。
- * cookie：QZONE_COOKIE 环境变量 → 数据目录 cookie.txt → ~/qzone-mcp/cookie.txt。
+ * cookie：QZONE_COOKIE 环境变量 → 数据目录 cookie.txt → ~/qzone-mcp/cookie.txt
+ * → TokenLens binding 密钥。
  */
 
 const NAME = "qzone";
@@ -22,9 +23,10 @@ export default (pi: ExtensionAPI) => {
     return;
   }
 
-  const cookie =
-    process.env.QZONE_COOKIE?.trim() ||
-    readFirstFile([join(dataDir, "cookie.txt"), join(homedir(), "qzone-mcp", "cookie.txt")]);
+  const cookie = firstSecret("QZONE_COOKIE", process.env.QZONE_COOKIE, [
+    join(dataDir, "cookie.txt"),
+    join(homedir(), "qzone-mcp", "cookie.txt"),
+  ]);
   if (!cookie) {
     warnOnStart(
       pi,

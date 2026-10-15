@@ -3,11 +3,12 @@ import { join } from "node:path";
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-import { hasExecutable, mcpDataDir, warnOnStart } from "../lib/mcp-support.ts";
+import { hasExecutable, lensAgentSecret, mcpDataDir, warnOnStart } from "../lib/mcp-support.ts";
 
 /**
  * outline-mcp：注册 Outline 知识库 MCP（npm 包 outline-mcp-server，无本地代码）。
- * 凭据：OUTLINE_API_URL / OUTLINE_API_KEY 环境变量，或数据目录 config.json。
+ * 凭据：OUTLINE_API_URL / OUTLINE_API_KEY 环境变量 → 数据目录 config.json
+ * → TokenLens binding 密钥。
  * 命令：优先 PATH 上的 outline-mcp-server-stdio（全局安装），否则 npx 拉取。
  */
 
@@ -33,8 +34,14 @@ function readConfigFile(): OutlineConfig {
 
 export default (pi: ExtensionAPI) => {
   const fileConfig = readConfigFile();
-  const apiUrl = process.env.OUTLINE_API_URL?.trim() || fileConfig.apiUrl?.trim();
-  const apiKey = process.env.OUTLINE_API_KEY?.trim() || fileConfig.apiKey?.trim();
+  const apiUrl =
+    process.env.OUTLINE_API_URL?.trim() ||
+    fileConfig.apiUrl?.trim() ||
+    lensAgentSecret("OUTLINE_API_URL");
+  const apiKey =
+    process.env.OUTLINE_API_KEY?.trim() ||
+    fileConfig.apiKey?.trim() ||
+    lensAgentSecret("OUTLINE_API_KEY");
   if (!apiUrl || !apiKey) {
     warnOnStart(
       pi,

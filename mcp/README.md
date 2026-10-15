@@ -36,17 +36,23 @@ pi 扩展直接按包内路径解析；没有包机制的客户端（如 opencod
 
 纯配置型（无本地代码、直连 URL）的 MCP 仍可放在 `mcp.json`，由 TokenLens 基线同步。
 
-## TokenLens 运行时取密（可选，pi）
+## TokenLens 运行时取密（pi）
 
-已接入 TokenLens 配置同步的机器可以不把秘密放本机文件，而是在 `mcp.json` 里用
-`!lens-agent secret get` 引用 binding 密钥（值在 Web「AI Agent → 机器部署 →
-配置与密钥」维护，多机用「复制全部密钥」分发；不落盘、不进基线）：
+pi 侧有两条取密路径，凭据都在 Web「AI Agent → 机器部署 → 配置与密钥」按 binding
+维护，多机用「复制全部密钥」分发；不落盘、不进基线：
+
+1. **扩展自动回退（默认推荐）**：`pi/extensions/*-mcp` 按「环境变量 → 数据目录
+   本地文件 → `lens-agent secret get`」的顺序解析凭据，本地没有密钥文件时自动向
+   TokenLens 取。stdio 服务的 Python 运行时按平台选择（Linux 用 `setup.sh` 的
+   venv，Windows 用 `uv run`），无需 `run.sh`，也不需要任何 `mcp.json` 条目。
+2. **`mcp.json` 显式引用（可选）**：需要把接线放进 TokenLens 基线时，用
+   `!lens-agent secret get` 引用显式覆盖扩展注册（同名 server 覆盖，见下）：
 
 - HTTP（siyuan）：`"Authorization": "!lens-agent secret get --format 'Token {value}' SIYUAN_TOKEN"`
 - stdio（yuque/weibo/qzone/processon）：`"YUQUE_COOKIE": "!lens-agent secret get YUQUE_COOKIE"`
-  + `command: "~/.local/share/token-lens-ex/mcp/<name>/run.sh"`（先 `setup.sh`）
+  + `command: "~/.local/share/token-lens-ex/mcp/<name>/run.sh"`（POSIX 且先 `setup.sh`；
+  Windows 用扩展回退即可）
 - outline：`"OUTLINE_API_KEY": "!lens-agent secret get OUTLINE_API_KEY"`（`OUTLINE_API_URL` 照常按机器写）
 
-写入 `mcp.json` 后同名 server 会覆盖扩展注册（有意迁移才这样做）；未迁移或
-Windows 机器继续走扩展 + 本地秘密文件。设计见 token-lens 仓库
-`docs/ai-agent-runtime-secrets.md`。
+写入 `mcp.json` 的同名 server 会覆盖扩展注册（有意迁移才这样做）。设计见
+TokenLens 仓库 `docs/ai-agent-runtime-secrets.md`。

@@ -4,12 +4,12 @@ import { join } from "node:path";
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-import { mcpDataDir, packageRoot, pythonRuntime, readFirstFile, warnOnStart } from "../lib/mcp-support.ts";
+import { mcpDataDir, firstSecret, lensAgentSecret, packageRoot, pythonRuntime, warnOnStart } from "../lib/mcp-support.ts";
 
 /**
  * yuque-mcp：注册包内 mcp/yuque/server.py 为 pi 的 MCP server（配置即代码）。
  * cookie：YUQUE_COOKIE 环境变量 → 数据目录 cookie.txt → ~/yuque-mcp/cookie.txt；
- * YUQUE_TOKEN（官方 API）优先。
+ * YUQUE_TOKEN（官方 API）优先；两者都缺时回退 TokenLens binding 密钥。
  */
 
 const NAME = "yuque";
@@ -23,10 +23,11 @@ export default (pi: ExtensionAPI) => {
     return;
   }
 
-  const token = process.env.YUQUE_TOKEN?.trim();
-  const cookie =
-    process.env.YUQUE_COOKIE?.trim() ||
-    readFirstFile([join(dataDir, "cookie.txt"), join(homedir(), "yuque-mcp", "cookie.txt")]);
+  const token = process.env.YUQUE_TOKEN?.trim() || lensAgentSecret("YUQUE_TOKEN");
+  const cookie = firstSecret("YUQUE_COOKIE", process.env.YUQUE_COOKIE, [
+    join(dataDir, "cookie.txt"),
+    join(homedir(), "yuque-mcp", "cookie.txt"),
+  ]);
   if (!token && !cookie) {
     warnOnStart(
       pi,

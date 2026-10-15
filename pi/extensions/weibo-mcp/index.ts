@@ -3,11 +3,12 @@ import { join } from "node:path";
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-import { mcpDataDir, packageRoot, pythonRuntime, readFirstFile, warnOnStart } from "../lib/mcp-support.ts";
+import { mcpDataDir, firstSecret, packageRoot, pythonRuntime, warnOnStart } from "../lib/mcp-support.ts";
 
 /**
  * weibo-mcp：注册包内 mcp/weibo/server.py 为 pi 的 MCP server（配置即代码）。
- * cookie：WEIBO_COOKIE 环境变量 → 数据目录 cookie.txt → ~/weibo-mcp/cookie.txt。
+ * cookie：WEIBO_COOKIE 环境变量 → 数据目录 cookie.txt → ~/weibo-mcp/cookie.txt
+ * → TokenLens binding 密钥。
  */
 
 const NAME = "weibo";
@@ -21,7 +22,10 @@ export default (pi: ExtensionAPI) => {
     return;
   }
 
-  const cookie = process.env.WEIBO_COOKIE?.trim() || readFirstFile([join(dataDir, "cookie.txt"), join(process.env.HOME ?? "", "weibo-mcp", "cookie.txt")]);
+  const cookie = firstSecret("WEIBO_COOKIE", process.env.WEIBO_COOKIE, [
+    join(dataDir, "cookie.txt"),
+    join(process.env.HOME ?? "", "weibo-mcp", "cookie.txt"),
+  ]);
   if (!cookie) {
     warnOnStart(
       pi,

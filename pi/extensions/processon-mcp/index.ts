@@ -4,11 +4,12 @@ import { join } from "node:path";
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-import { mcpDataDir, packageRoot, pythonRuntime, readFirstFile, warnOnStart } from "../lib/mcp-support.ts";
+import { mcpDataDir, firstSecret, packageRoot, pythonRuntime, warnOnStart } from "../lib/mcp-support.ts";
 
 /**
  * processon-mcp：注册包内 mcp/processon/server.py 为 pi 的 MCP server（配置即代码）。
- * cookie：PROCESSON_COOKIE 环境变量 → 数据目录 cookie.txt → ~/processon-mcp/cookie.txt。
+ * cookie：PROCESSON_COOKIE 环境变量 → 数据目录 cookie.txt → ~/processon-mcp/cookie.txt
+ * → TokenLens binding 密钥。
  * 也支持 PROCESSON_ACCOUNT / PROCESSON_PASSWORD（账号密码模式），有则一并传入。
  */
 
@@ -23,9 +24,10 @@ export default (pi: ExtensionAPI) => {
     return;
   }
 
-  const cookie =
-    process.env.PROCESSON_COOKIE?.trim() ||
-    readFirstFile([join(dataDir, "cookie.txt"), join(homedir(), "processon-mcp", "cookie.txt")]);
+  const cookie = firstSecret("PROCESSON_COOKIE", process.env.PROCESSON_COOKIE, [
+    join(dataDir, "cookie.txt"),
+    join(homedir(), "processon-mcp", "cookie.txt"),
+  ]);
   const account = process.env.PROCESSON_ACCOUNT?.trim();
   const password = process.env.PROCESSON_PASSWORD?.trim();
   if (!cookie && !(account && password)) {

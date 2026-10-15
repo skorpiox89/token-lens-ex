@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
@@ -10,7 +11,8 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
  * 解析 Python 运行环境（venv 优先、uv 回退）、启动时提示。
  *
  * 约定：代码随 pi 包分发（mcp/<name>/），环境与秘密只留机器本地
- * （数据目录 ~/.local/share/token-lens-ex/mcp/<name>/）。
+ * （数据目录 ~/.local/share/token-lens-ex/mcp/<name>/）；已接入 TokenLens
+ * 配置同步的机器可以用 binding 密钥代替本地文件（见 lensAgentSecret）。
  */
 
 export function packageRoot(extensionUrl: string): string {
@@ -32,6 +34,35 @@ export function readFirstFile(paths: string[]): string | undefined {
     }
   }
   return undefined;
+}
+
+/**
+ * 通过 lens-agent 从 TokenLens 取 binding 密钥（B 方案运行时取密）。
+ * 仅在环境变量与本地文件都缺失时兜底；值只经过子进程 stdout，不落盘、不写日志。
+ * lens-agent 未安装、binding 未配置该密钥或 TokenLens 不可达时返回 undefined。
+ */
+export function lensAgentSecret(name: string): string | undefined {
+  try {
+    const output = execFileSync("lens-agent", ["secret", "get", name], {
+      encoding: "utf8",
+      timeout: 6000,
+      windowsHide: true,
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+    const value = output.trim();
+    return value || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** 凭据解析顺序：环境变量 → 本地文件 → TokenLens（lens-agent secret get）。 */
+export function firstSecret(
+  name: string,
+  envValue: string | undefined,
+  paths: string[]
+): string | undefined {
+  return envValue?.trim() || readFirstFile(paths) || lensAgentSecret(name);
 }
 
 export function hasExecutable(name: string): boolean {
