@@ -15,13 +15,12 @@ token-lens-ex/
 ├── mcp/                         # MCP 服务代码（MCP-as-code，见下）
 │   ├── yuque/ weibo/ qzone/ processon/   # 本地 stdio 服务（Python）
 │   ├── siyuan/                  # 无代码：登记思源 HTTP MCP 的说明
-│   ├── outline/                 # 无代码：登记 npm 包的说明
 │   └── setup.sh                 # 建 venv：./setup.sh <name>
 ├── pi/                          # pi 专用
 │   ├── extensions/              # pi 扩展：每个子目录一个，入口 index.ts
 │   │   ├── pi-token-lens-ttft/
-│   │   ├── yuque-mcp/           # 以下 6 个自动注册对应 MCP server
-│   │   ├── weibo-mcp/ qzone-mcp/ processon-mcp/ siyuan-mcp/ outline-mcp/
+│   │   ├── yuque-mcp/           # 以下 5 个自动注册对应 MCP server
+│   │   ├── weibo-mcp/ qzone-mcp/ processon-mcp/ siyuan-mcp/
 │   │   └── lib/                 # 扩展共享工具（不被当扩展加载）
 │   └── skills/                  # pi 专用技能
 ├── codex/                       # Codex 专用
@@ -80,7 +79,7 @@ MCP 的「代码 + 环境 + 密钥」不适合直接用 `mcp.json` 跨机同步�
 启动器 `~/.local/share/token-lens-ex/mcp/<name>/run.sh`，供没有包内路径解析能力的
 客户端（opencode）调用。
 
-首个落地（均已迁移）：语雀、微博、QQ空间、ProcessOn、思源笔记、Outline → 目录见
+首个落地（均已迁移）：语雀、微博、QQ空间、ProcessOn、思源笔记 → 目录见
 [`mcp/README.md`](mcp/README.md)，部署说明在各自的 `skills/<name>-mcp/SKILL.md`。
 纯配置型（无本地代码、直连 URL）的 MCP 仍可放 `mcp.json`，由 TokenLens 基线同步。
 

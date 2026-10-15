@@ -29,7 +29,6 @@ pi 扩展直接按包内路径解析；没有包机制的客户端（如 opencod
 | `qzone` | Python stdio | `QZONE_COOKIE` |
 | `processon` | Python stdio | `PROCESSON_COOKIE`（或账号密码） |
 | `siyuan` | HTTP（思源自带） | `SIYUAN_TOKEN` + `SIYUAN_MCP_URL` |
-| `outline` | npm stdio（`outline-mcp-server`） | `OUTLINE_API_URL` + `OUTLINE_API_KEY` |
 
 凭据统一放 `~/.local/share/token-lens-ex/mcp/<name>/`（cookie.txt / token.txt / config.json）
 或对应环境变量；兼容旧的 `~/<name>-mcp/` 路径。
@@ -52,7 +51,6 @@ pi 侧有两条取密路径，凭据都在 Web「AI Agent → 机器部署 → �
 - stdio（yuque/weibo/qzone/processon）：`"YUQUE_COOKIE": "!lens-agent secret get YUQUE_COOKIE"`
   + `command: "~/.local/share/token-lens-ex/mcp/<name>/run.sh"`（POSIX 且先 `setup.sh`；
   Windows 用扩展回退即可）
-- outline：`"OUTLINE_API_KEY": "!lens-agent secret get OUTLINE_API_KEY"`（`OUTLINE_API_URL` 照常按机器写）
 
 写入 `mcp.json` 的同名 server 会覆盖扩展注册（有意迁移才这样做）。设计见
 TokenLens 仓库 `docs/ai-agent-runtime-secrets.md`。

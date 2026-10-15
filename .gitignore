@@ -7,7 +7,6 @@ dist/
 mcp/**/cookie.txt
 mcp/**/token.txt
 mcp/**/config.json
-mcp/**/outline.json
 mcp/**/venv/
 mcp/**/__pycache__/
 mcp/**/export/
